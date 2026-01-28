@@ -8,7 +8,6 @@ interface PracticeSummaryCardProps {
 
 type PerformanceStatus = "high" | "stable" | "at-risk";
 
-// Subcomponent: Header
 const Header = ({ name, city, country }: { name: string; city: string; country: string }) => (
   <div className="card-header">
     <h2 className="practice-name">{name}</h2>
@@ -18,7 +17,6 @@ const Header = ({ name, city, country }: { name: string; city: string; country: 
   </div>
 );
 
-// Subcomponent: Status Indicator
 const StatusIndicator = ({ conversionRate }: { conversionRate: number }) => {
   const getStatusConfig = (rate: number) => {
     if (rate >= 20) return { label: "High Performer", className: "status-high" };
@@ -31,7 +29,6 @@ const StatusIndicator = ({ conversionRate }: { conversionRate: number }) => {
   return <div className={`status-indicator ${statusConfig.className}`}>{statusConfig.label}</div>;
 };
 
-// Subcomponent: Metrics
 const Metrics = ({ newPatientsThisMonth, appointmentRequests, conversionRate, marketingSpend }: { newPatientsThisMonth: number; appointmentRequests: number; conversionRate: number; marketingSpend?: number }) => (
   <div className="metrics-container">
     <div className="metric-item">
@@ -60,7 +57,7 @@ const Metrics = ({ newPatientsThisMonth, appointmentRequests, conversionRate, ma
   </div>
 );
 
-// Subcomponent: Trend Visualization
+// Trend Visualization
 const TrendChart = ({ monthlyTrend, status }: { monthlyTrend: number[]; status: PerformanceStatus }) => {
   const maxValue = Math.max(...monthlyTrend) || 1;
 
@@ -73,6 +70,11 @@ const TrendChart = ({ monthlyTrend, status }: { monthlyTrend: number[]; status: 
       default:
         return "#6b7280";
     }
+  };
+
+  const getMonthLabel = (index: number) => {
+    const months = ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb"];
+    return months[index];
   };
 
   const barColor = getStatusColor(status);
@@ -89,9 +91,9 @@ const TrendChart = ({ monthlyTrend, status }: { monthlyTrend: number[]; status: 
                 height: `${(value / maxValue) * 80}%`,
                 backgroundColor: barColor,
               }}
-              title={`Month ${index + 1}: ${value} patients`}
+              title={`${getMonthLabel(index)}: ${value} patients`}
             />
-            <span className="trend-label">{index + 1}m</span>
+            <span className="trend-label">{getMonthLabel(index)}</span>
             <span className="trend-value">{value}</span>
           </div>
         ))}
@@ -100,7 +102,7 @@ const TrendChart = ({ monthlyTrend, status }: { monthlyTrend: number[]; status: 
   );
 };
 
-// Subcomponent: Recommendations
+// Recommendations based on conversion rate
 const Recommendations = ({ conversionRate }: { conversionRate: number }) => {
   const getRecommendations = (rate: number): string[] => {
     if (rate < 10) {
@@ -129,7 +131,7 @@ const Recommendations = ({ conversionRate }: { conversionRate: number }) => {
   );
 };
 
-// Main Component
+// Main card component
 const PracticeSummaryCard: React.FC<PracticeSummaryCardProps> = ({ practice }) => {
   const getPerformanceStatus = (conversionRate: number): PerformanceStatus => {
     if (conversionRate >= 20) return "high";
